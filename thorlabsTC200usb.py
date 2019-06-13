@@ -29,35 +29,43 @@ from pymeasure.adapters import SerialAdapter, VISAAdapter
 
 class ThorlabsTC200USB(Instrument):
 
-    def toggleenable(self):
-        self.adapter.write('ens\r')
+    def write(self, command):
+        self.adapter.write(command)
+        time.sleep(0.5) #Wait for instrument to return command
+        self.read_single_line()
 
-    def set_temp(self, temp):
-        self.adapter.write("tset=%.1f\r" % temp)   
-    
-    def get_temp(self):
-        temp = self.read_temp("tset?\r")
-        return temp
+    def get_stat(self):
+        """
+        Reads zeroth bit of status byte
+        """
+        self.write('stat?\r')
+        return (int(self.read_single_line()[:2])%2)
+
+    def toggleenable(self):
+        self.write('ens\r')
 
     def act_temp(self):
-        temp = self.read_temp("tact?\r")
-        return temp
+        self.write("tact?\r")
+        temp = self.read_single_line()
+        return float(temp[:-2])
 
-    def set_ramp_rate(self, ramp_rate):
-        self.adapter.write("ramp=%d" % ramp_rate)
+    def set_mode(self, mode):
+        self.write('mode=' + mode + '\r')
 
-    def read_temp(self, command):
-        """
-        Parse multiple output lines for temperature.
-        """
-        self.adapter.write(command)
-        output_list = []
-        while True:
-            output_line = self.read_single_line()
-            if output_line == '':
-                break
-            output_list.append(output_line  )
-        return float(output_list[-2][:5])
+    def set_cycle_num(self, cycle_num):
+        self.write('cycle=%d\r' % cycle_num)
+
+    def set_stop_temp(self, stop_temp):
+        self.write('stop=%.1f\r' % stop_temp)
+
+    def set_ramp_time(self, ramp_time):
+        self.write('ramp=%d\r' % ramp_time)
+
+    def set_hold_time(self, hold_time):
+        self.write('hold=%d\r' % hold_time)
+
+    def set_temp(self, temp):
+        self.write('tset=%.1f\r' % temp)
 
     def read_single_line(self):
         """ Reads line
@@ -79,7 +87,7 @@ class ThorlabsTC200USB(Instrument):
 
     def __init__(self, port, rw_delay=None, **kwargs):
         super(ThorlabsTC200USB, self).__init__(
-            SerialAdapter(serial.Serial(port, baudrate=115200, timeout=0.11)), "Thorlabs TC200 Temperature Controller", **kwargs
+            SerialAdapter(serial.Serial(port, baudrate=115200, timeout=0.1)), "Thorlabs TC200 Temperature Controller", **kwargs
         )
 
         # super(ThorlabsTC200USB, self).__init__(
