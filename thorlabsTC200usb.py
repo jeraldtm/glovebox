@@ -43,6 +43,9 @@ class ThorlabsTC200USB(Instrument):
         temp = self.read_temp("tact?\r")
         return temp
 
+    def set_ramp_rate(self, ramp_rate):
+        self.adapter.write("ramp=%d" % ramp_rate)
+
     def read_temp(self, command):
         """
         Parse multiple output lines for temperature.

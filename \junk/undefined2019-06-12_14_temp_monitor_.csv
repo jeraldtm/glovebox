@@ -1,0 +1,9 @@
+#Procedure: <__main__.tempProcedure>
+#Parameters:
+#	Hold Time: 1 min
+#	Ramp Time: 1 min
+#	Sample Name: undefined
+#	Save Directory: \junk
+#	Set Temperature: 40 C
+#Data:
+global_time,temperature,heating_time
