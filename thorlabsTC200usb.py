@@ -87,7 +87,7 @@ class ThorlabsTC200USB(Instrument):
 
     def __init__(self, port, rw_delay=None, **kwargs):
         super(ThorlabsTC200USB, self).__init__(
-            SerialAdapter(serial.Serial(port, baudrate=115200, timeout=0.1)), "Thorlabs TC200 Temperature Controller", **kwargs
+            SerialAdapter(port, baudrate=115200, timeout=0.1), "Thorlabs TC200 Temperature Controller", **kwargs
         )
 
         # super(ThorlabsTC200USB, self).__init__(

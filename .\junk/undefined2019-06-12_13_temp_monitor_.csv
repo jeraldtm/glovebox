@@ -1,9 +1,0 @@
-#Procedure: <__main__.tempProcedure>
-#Parameters:
-#	Measurement Delay: 0.5 s
-#	Measurement Duration: 600 s
-#	Sample Name: undefined
-#	Save Directory: .\junk
-#	Set Temperature: 20 C
-#Data:
-t,temperature,time

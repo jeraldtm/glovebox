@@ -22,6 +22,7 @@ from pymeasure.display.manager import Manager, Experiment, ImageExperiment, Imag
 from pymeasure.display.Qt import QtCore, QtGui
 from pymeasure.display.widgets import PlotWidget, BrowserWidget, InputsWidget, LogWidget, ResultsDialog, ImageWidget
 from pymeasure.experiment.results import Results
+import serial
 
 class tempProcedure(Procedure):
 	sample_name = Parameter("Sample Name", default='undefined')
@@ -34,7 +35,7 @@ class tempProcedure(Procedure):
 	def startup(self):
 		log.info("Temp, Ramp, Hold: %.1f, %d, %d" % (self.stop_temp, self.ramp_time, self.hold_time))
 		log.info("Connecting temperature controller")
-		self.tempcontrol = ThorlabsTC200USB('/dev/ttyUSB0')
+		self.tempcontrol = ThorlabsTC200USB('COM3')
 		if self.tempcontrol.get_stat():
 			self.tempcontrol.toggleenable()
 		self.tempcontrol.set_mode('cycle')
@@ -69,6 +70,7 @@ class tempProcedure(Procedure):
 		log.info("Finished with scan. Shutting down instruments.")
 		if self.tempcontrol.get_stat():
 			self.tempcontrol.toggleenable()
+		self.tempcontrol.adapter.connection.close() #close serial port to avoid port already open error
 
 class tempQTQUI(ManagedWindow):
 	def __init__(self):
