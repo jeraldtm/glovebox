@@ -33,9 +33,10 @@ class tempProcedure(Procedure):
 	DATA_COLUMNS = ["global_time", "temperature", "heating_time"]
 
 	def startup(self):
-		log.info("Temp, Ramp, Hold: %.1f, %d, %d" % (self.stop_temp, self.ramp_time, self.hold_time))
+		log.info("Stop, Ramp, Hold: %.1f, %d, %d" % (self.stop_temp, self.ramp_time, self.hold_time))
 		log.info("Connecting temperature controller")
 		self.tempcontrol = ThorlabsTC200USB('COM3')
+		self.tempcontrol.set_temp(self.tempcontrol.act_temp())
 		if self.tempcontrol.get_stat():
 			self.tempcontrol.toggleenable()
 		self.tempcontrol.set_mode('cycle')
