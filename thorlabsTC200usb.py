@@ -30,7 +30,7 @@ from pymeasure.adapters import SerialAdapter, VISAAdapter
 class ThorlabsTC200USB(Instrument):
 
     def write(self, command):
-        self.adapter.write(command)
+        self.adapter.write(command + '\r')
         time.sleep(0.5) #Wait for instrument to return command
         self.read_single_line()
 
@@ -38,37 +38,37 @@ class ThorlabsTC200USB(Instrument):
         """
         Reads zeroth bit of status byte
         """
-        self.write('stat?\r')
+        self.write('stat?')
         return (int(self.read_single_line()[:2])%2)
 
     def toggleenable(self):
-        self.write('ens\r')
+        self.write('ens')
 
     def act_temp(self):
-        self.write("tact?\r")
+        self.write("tact?")
         temp = self.read_single_line()
-        return float(temp[:-2])
+        return float(temp[:-2]) #Extract float from string e.g. 20.0 from '20.0 C' 
 
     def set_mode(self, mode):
-        self.write('mode=' + mode + '\r')
+        self.write('mode=' + mode + '')
 
     def set_cycle_num(self, cycle_num):
-        self.write('cycle=%d\r' % cycle_num)
+        self.write('cycle=%d' % cycle_num)
 
     def set_stop_temp(self, stop_temp):
-        self.write('stop=%.1f\r' % stop_temp)
+        self.write('stop=%.1f' % stop_temp)
 
     def set_ramp_time(self, ramp_time):
-        self.write('ramp=%d\r' % ramp_time)
+        self.write('ramp=%d' % ramp_time)
 
     def set_hold_time(self, hold_time):
-        self.write('hold=%d\r' % hold_time)
+        self.write('hold=%d' % hold_time)
 
     def set_temp(self, temp):
-        self.write('tset=%.1f\r' % temp)
+        self.write('tset=%.1f' % temp)
 
     def read_single_line(self):
-        """ Reads line
+        """ Reads line from instrument ending in \r
         :returns: String ASCII response of instrument
         """
         eol = '\r'
